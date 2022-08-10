@@ -73,9 +73,14 @@ int main()
   std::vector<GLfloat> bgColor         = { 0.0f, 0.0f, 0.0f };
   bool                 isBgColorUpping = true;
 
-  GLfloat              points[]        = {
-    0.0f, 0.5f, 0.0f, 0.5f, -0.5f, 0.0f, -0.5f, -0.5f, 0.0f
-  };
+  /* GLfloat              points[]        = { */
+  /*   0.0f, 0.5f, 0.0f, 0.5f, -0.5f, 0.0f, -0.5f, -0.5f, 0.0f */
+  /* }; */
+  std::vector<GLfloat> points1         = { 0.0f, 0.5f,  0.0f,  0.5f, -0.5f,
+                                   0.0f, -0.5f, -0.5f, 0.0f };
+  std::vector<GLfloat> points2         = { 0.0f, -0.5f, 0.0f, 0.5f, 0.5f,
+                                   0.0f, -0.5f, 0.5f, 0.0f };
+  points1.insert(points1.end(), points2.begin(), points2.end());
 
   if (! glfwInit()) return 1;
   atexit(glfwTerminate);
@@ -105,7 +110,8 @@ int main()
 
   glGenBuffers(1, &vbo);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(GLfloat), points, GL_STATIC_DRAW);
+  glBufferData(
+      GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), points1.data(), GL_STATIC_DRAW);
 
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
@@ -120,7 +126,7 @@ int main()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shader);
     glBindVertexArray(vao);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
     glfwPollEvents();
     glfwSwapBuffers(window);
   }

@@ -73,9 +73,6 @@ int main()
   std::vector<GLfloat> bgColor         = { 0.0f, 0.0f, 0.0f };
   bool                 isBgColorUpping = true;
 
-  /* GLfloat              points[]        = { */
-  /*   0.0f, 0.5f, 0.0f, 0.5f, -0.5f, 0.0f, -0.5f, -0.5f, 0.0f */
-  /* }; */
   std::vector<GLfloat> points1         = { 0.0f, 0.5f,  0.0f,  0.5f, -0.5f,
                                    0.0f, -0.5f, -0.5f, 0.0f };
   std::vector<GLfloat> points2         = { 0.0f, -0.5f, 0.0f, 0.5f, 0.5f,

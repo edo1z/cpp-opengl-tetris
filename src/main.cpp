@@ -43,22 +43,22 @@ GLint makeShader()
 void updateBgColor(std::vector<GLfloat> &v, bool &isUpping)
 {
   if (isUpping) {
-    if (v[0] <= 1) {
-      v[0] += 0.01;
-    } else if (v[1] <= 1) {
-      v[1] += 0.01;
-    } else if (v[2] <= 1) {
-      v[2] += 0.01;
+    if (v[0] <= 0.2) {
+      v[0] += 0.001;
+    } else if (v[1] <= 0.3) {
+      v[1] += 0.001;
+    } else if (v[2] <= 0.5) {
+      v[2] += 0.001;
     } else {
       isUpping = false;
     }
   } else {
-    if (v[0] >= 0) {
-      v[0] -= 0.01;
-    } else if (v[1] >= 0) {
-      v[1] -= 0.01;
-    } else if (v[2] >= 0) {
-      v[2] -= 0.01;
+    if (v[0] >= 0.2) {
+      v[0] -= 0.001;
+    } else if (v[1] >= 0.2) {
+      v[1] -= 0.001;
+    } else if (v[2] >= 0.3) {
+      v[2] -= 0.001;
     } else {
       isUpping = true;
     }

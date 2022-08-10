@@ -65,6 +65,25 @@ void updateBgColor(std::vector<GLfloat> &v, bool &isUpping)
   }
 }
 
+void move(std::vector<GLfloat> &v)
+{
+  if (v[6] > 1) {
+    v[0]  = -1.5;
+    v[3]  = -1.0;
+    v[6]  = -2.0;
+    v[9]  = -1.5;
+    v[12] = -1.0;
+    v[15] = -2.0;
+  } else {
+    v[0] += 0.01;
+    v[3] += 0.01;
+    v[6] += 0.01;
+    v[9] += 0.01;
+    v[12] += 0.01;
+    v[15] += 0.01;
+  }
+}
+
 int main()
 {
   GLFWwindow          *window = NULL;
@@ -73,11 +92,11 @@ int main()
   std::vector<GLfloat> bgColor         = { 0.0f, 0.0f, 0.0f };
   bool                 isBgColorUpping = true;
 
-  std::vector<GLfloat> points1         = { 0.0f, 0.5f,  0.0f,  0.5f, -0.5f,
-                                   0.0f, -0.5f, -0.5f, 0.0f };
+  std::vector<GLfloat> points          = { 0.0f, 0.5f,  0.0f,  0.5f, -0.5f,
+                                  0.0f, -0.5f, -0.5f, 0.0f };
   std::vector<GLfloat> points2         = { 0.0f, -0.5f, 0.0f, 0.5f, 0.5f,
                                    0.0f, -0.5f, 0.5f, 0.0f };
-  points1.insert(points1.end(), points2.begin(), points2.end());
+  points.insert(points.end(), points2.begin(), points2.end());
 
   if (! glfwInit()) return 1;
   atexit(glfwTerminate);
@@ -107,17 +126,18 @@ int main()
 
   glGenBuffers(1, &vbo);
   glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glBufferData(
-      GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), points1.data(), GL_STATIC_DRAW);
-
-  glGenVertexArrays(1, &vao);
-  glBindVertexArray(vao);
-  glEnableVertexAttribArray(0);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
+    move(points);
+    glBufferData(
+        GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), points.data(), GL_STATIC_DRAW);
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
     updateBgColor(bgColor, isBgColorUpping);
     glClearColor(bgColor[0], bgColor[1], bgColor[2], 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

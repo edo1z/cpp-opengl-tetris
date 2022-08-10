@@ -4,6 +4,7 @@
 #  include <GLFW/glfw3.h>
 #endif
 #include <iostream>
+#include <vector>
 
 static void key_callback(
     GLFWwindow *window, int key, int scancode, int action, int mods)
@@ -22,7 +23,7 @@ GLint makeShader()
   const char *fragment_shader = "#version 150\n"
                                 "out vec4 frag_colour;"
                                 "void main() {"
-                                "  frag_colour = vec4(0.3, 0.6, 1.0, 1.0);"
+                                "  frag_colour = vec4(0.0, 0.0, 0.0, 1.0);"
                                 "}";
   GLuint      vs, fs;
   GLuint      shader_programme;
@@ -39,13 +40,27 @@ GLint makeShader()
   return shader_programme;
 }
 
+void updateBgColor(std::vector<GLfloat> &v)
+{
+  if (v[0] < 1) {
+    v[0] += 0.1;
+  } else if (v[1] < 1) {
+    v[1] += 0.1;
+  } else if (v[2] < 1) {
+    v[2] += 0.1;
+  } else {
+    v = { 0 };
+  }
+}
+
 int main()
 {
-  GLFWwindow *window = NULL;
-  GLuint      vao;
-  GLuint      vbo;
+  GLFWwindow          *window = NULL;
+  GLuint               vao;
+  GLuint               vbo;
+  std::vector<GLfloat> bgColor  = { 0.0 };
 
-  GLfloat     points[] = {
+  GLfloat              points[] = {
     0.0f, 0.5f, 0.0f, 0.5f, -0.5f, 0.0f, -0.5f, -0.5f, 0.0f
   };
 
@@ -65,13 +80,13 @@ int main()
 
   glfwSetKeyCallback(window, key_callback);
   glfwMakeContextCurrent(window);
+  glfwSwapInterval(1);
   glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK) {
     std::cerr << "Can't initialize GLEW" << std::endl;
     return 1;
   }
 
-  glClearColor(0.0f, 0.1f, 0.5f, 0.0f);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
 
@@ -87,6 +102,8 @@ int main()
 
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
+    updateBgColor(bgColor);
+    glClearColor(bgColor[0], bgColor[1], bgColor[2], 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shader);
     glBindVertexArray(vao);

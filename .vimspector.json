@@ -1,0 +1,18 @@
+{
+  "configurations": {
+    "CodeLLDB": {
+      "adapter": "CodeLLDB",
+      "variables": {
+        "BUILDME": {
+          "shell": "clang++ -o ${workspaceRoot}/bin/debug -g -lglfw -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo ${workspaceRoot}/src/main.cpp"
+        }
+      },
+      "configuration": {
+        "request": "launch",
+        "program": "${workspaceRoot}/bin/debug",
+        "stdio": [null, null, null]
+      }
+    }
+  }
+}
+

@@ -57,7 +57,8 @@ int main()
 {
   GLFWwindow          *window = NULL;
   GLuint               vao;
-  GLuint               vbo;
+  GLuint               vertex_vbo;
+  GLuint               color_vbo;
   std::vector<GLfloat> bgColor         = { 0.0f, 0.0f, 0.0f };
   bool                 isBgColorUpping = true;
 
@@ -66,6 +67,9 @@ int main()
   std::vector<GLfloat> points2         = { 0.0f, -0.75f, 0.0f,  0.5f, 0.25f,
                                    0.0f, -0.5f,  0.25f, 0.0f };
   points.insert(points.end(), points2.begin(), points2.end());
+  std::vector<GLfloat> colors = { 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+                                  0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+                                  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f };
 
   if (! glfwInit()) return 1;
   atexit(glfwTerminate);
@@ -93,26 +97,35 @@ int main()
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LESS);
 
-  glGenBuffers(1, &vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
+  glGenVertexArrays(1, &vao);
+  glBindVertexArray(vao);
+
+  glGenBuffers(1, &vertex_vbo);
+  glGenBuffers(1, &color_vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
+  glBufferData(
+      GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
 
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
-    move(points);
-    glBufferData(
-        GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), points.data(), GL_STATIC_DRAW);
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-
     updateBgColor(bgColor, isBgColorUpping);
     glClearColor(bgColor[0], bgColor[1], bgColor[2], 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shader);
-    glBindVertexArray(vao);
+
+    glEnableVertexAttribArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
+    move(points);
+    glBufferData(
+        GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), points.data(), GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+
     glDrawArrays(GL_TRIANGLES, 0, 6);
+
     glfwPollEvents();
     glfwSwapBuffers(window);
   }

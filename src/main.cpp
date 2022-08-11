@@ -94,8 +94,8 @@ int main()
 
   std::vector<GLfloat> points          = { 0.0f, 0.5f,  0.0f,  0.5f, -0.5f,
                                   0.0f, -0.5f, -0.5f, 0.0f };
-  std::vector<GLfloat> points2         = { 0.0f, -0.5f, 0.0f, 0.5f, 0.5f,
-                                   0.0f, -0.5f, 0.5f, 0.0f };
+  std::vector<GLfloat> points2         = { 0.0f, -0.75f, 0.0f,  0.5f, 0.25f,
+                                   0.0f, -0.5f,  0.25f, 0.0f };
   points.insert(points.end(), points2.begin(), points2.end());
 
   if (! glfwInit()) return 1;

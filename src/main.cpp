@@ -6,70 +6,25 @@
 #include <iostream>
 #include <vector>
 
+#include "BgColor.h"
 #include "key_callbacks.h"
 #include "shader.h"
+#include "Triangle.h"
 
-void updateBgColor(std::vector<GLfloat> &v, bool &isUpping)
+const int SCREEN_WIDTH   = 450;
+const int SCREEN_HEIGHT  = 750;
+const int BLOCK_NUMBER_X = 15;
+const int BLOCK_WIDTH    = SCREEN_WIDTH / BLOCK_NUMBER_X;
+const int BLOCK_HEIGHT   = BLOCK_WIDTH;
+
+int       main()
 {
-  if (isUpping) {
-    if (v[0] <= 0.2) {
-      v[0] += 0.001;
-    } else if (v[1] <= 0.3) {
-      v[1] += 0.001;
-    } else if (v[2] <= 0.5) {
-      v[2] += 0.001;
-    } else {
-      isUpping = false;
-    }
-  } else {
-    if (v[0] >= 0.2) {
-      v[0] -= 0.001;
-    } else if (v[1] >= 0.2) {
-      v[1] -= 0.001;
-    } else if (v[2] >= 0.3) {
-      v[2] -= 0.001;
-    } else {
-      isUpping = true;
-    }
-  }
-}
-
-void move(std::vector<GLfloat> &v)
-{
-  if (v[6] > 1) {
-    v[0]  = -1.5;
-    v[3]  = -1.0;
-    v[6]  = -2.0;
-    v[9]  = -1.5;
-    v[12] = -1.0;
-    v[15] = -2.0;
-  } else {
-    v[0] += 0.01;
-    v[3] += 0.01;
-    v[6] += 0.01;
-    v[9] += 0.01;
-    v[12] += 0.01;
-    v[15] += 0.01;
-  }
-}
-
-int main()
-{
-  GLFWwindow          *window = NULL;
-  GLuint               vao;
-  GLuint               vertex_vbo;
-  GLuint               color_vbo;
-  std::vector<GLfloat> bgColor         = { 0.0f, 0.0f, 0.0f };
-  bool                 isBgColorUpping = true;
-
-  std::vector<GLfloat> points          = { 0.0f, 0.5f,  0.0f,  0.5f, -0.5f,
-                                  0.0f, -0.5f, -0.5f, 0.0f };
-  std::vector<GLfloat> points2         = { 0.0f, -0.75f, 0.0f,  0.5f, 0.25f,
-                                   0.0f, -0.5f,  0.25f, 0.0f };
-  points.insert(points.end(), points2.begin(), points2.end());
-  std::vector<GLfloat> colors = { 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-                                  0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-                                  1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f };
+  GLFWwindow *window = NULL;
+  GLuint      vao;
+  GLuint      vertex_vbo;
+  GLuint      color_vbo;
+  Triangle    triangle;
+  BgColor     bgColor;
 
   if (! glfwInit()) return 1;
   atexit(glfwTerminate);
@@ -79,7 +34,8 @@ int main()
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  window = glfwCreateWindow(640, 480, "Hello World", NULL, NULL);
+  window =
+      glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hello World", NULL, NULL);
   if (! window) {
     std::cerr << "Failed to create window." << std::endl;
     return 1;
@@ -104,20 +60,22 @@ int main()
   glGenBuffers(1, &color_vbo);
   glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
   glBufferData(
-      GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
+      GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), triangle.colors.data(),
+      GL_STATIC_DRAW);
 
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
-    updateBgColor(bgColor, isBgColorUpping);
-    glClearColor(bgColor[0], bgColor[1], bgColor[2], 0.0f);
+    bgColor.update();
+    glClearColor(bgColor.color[0], bgColor.color[1], bgColor.color[2], 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shader);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
-    move(points);
+    triangle.move();
     glBufferData(
-        GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), points.data(), GL_STATIC_DRAW);
+        GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), triangle.points.data(),
+        GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
     glEnableVertexAttribArray(1);

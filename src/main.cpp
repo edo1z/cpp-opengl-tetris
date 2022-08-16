@@ -7,24 +7,45 @@
 #include <vector>
 
 #include "BgColor.h"
+#include "Block.h"
 #include "key_callbacks.h"
 #include "shader.h"
 #include "Triangle.h"
 
-const int SCREEN_WIDTH   = 450;
-const int SCREEN_HEIGHT  = 750;
-const int BLOCK_NUMBER_X = 15;
-const int BLOCK_WIDTH    = SCREEN_WIDTH / BLOCK_NUMBER_X;
-const int BLOCK_HEIGHT   = BLOCK_WIDTH;
+const GLfloat SCREEN_WIDTH   = 450.0f;
+const GLfloat SCREEN_HEIGHT  = 750.0f;
+const int     BLOCK_NUMBER_X = 15;
+const GLfloat BLOCK_WIDTH    = SCREEN_WIDTH / BLOCK_NUMBER_X;
+const GLfloat BLOCK_HEIGHT   = BLOCK_WIDTH;
 
-int       main()
+void          init_blocks(
+             std::vector<GLfloat>& blocks, std::vector<GLfloat>& block_colors)
 {
-  GLFWwindow *window = NULL;
-  GLuint      vao;
-  GLuint      vertex_vbo;
-  GLuint      color_vbo;
-  Triangle    triangle;
-  BgColor     bgColor;
+  GLfloat              w     = BLOCK_WIDTH / SCREEN_WIDTH;
+  GLfloat              h     = BLOCK_HEIGHT / SCREEN_HEIGHT;
+  std::vector<GLfloat> posi  = { 0.0f, 0.0f, 0.0f };
+  std::vector<GLfloat> color = { 0.0f, 1.0f, 1.0f };
+  Block                bl(w, h, posi, color);
+  blocks                     = bl.positions;
+  block_colors               = bl.colors;
+  std::vector<GLfloat> posi2 = { 0.0f, 0.0f + h, 0.0f };
+  Block                bl2(w, h, posi2, color);
+  blocks.insert(blocks.end(), bl2.positions.begin(), bl2.positions.end());
+  block_colors.insert(block_colors.end(), bl2.colors.begin(), bl2.colors.end());
+}
+
+int main()
+{
+  GLFWwindow*          window = NULL;
+  GLuint               vao;
+  GLuint               vertex_vbo;
+  GLuint               color_vbo;
+  Triangle             triangle;
+  BgColor              bgColor;
+  std::vector<GLfloat> blocks;
+  std::vector<GLfloat> block_colors;
+
+  init_blocks(blocks, block_colors);
 
   if (! glfwInit()) return 1;
   atexit(glfwTerminate);
@@ -60,7 +81,9 @@ int       main()
   glGenBuffers(1, &color_vbo);
   glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
   glBufferData(
-      GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), triangle.colors.data(),
+      /* GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), triangle.colors.data(), */
+      /* GL_STATIC_DRAW); */
+      GL_ARRAY_BUFFER, 24 * sizeof(GLfloat), block_colors.data(),
       GL_STATIC_DRAW);
 
   GLint shader = makeShader();
@@ -74,15 +97,16 @@ int       main()
     glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
     triangle.move();
     glBufferData(
-        GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), triangle.points.data(),
-        GL_STATIC_DRAW);
+        /* GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), triangle.points.data(), */
+        /* GL_STATIC_DRAW); */
+        GL_ARRAY_BUFFER, 24 * sizeof(GLfloat), blocks.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
 
     glfwPollEvents();
     glfwSwapBuffers(window);

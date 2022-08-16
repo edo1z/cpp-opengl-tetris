@@ -4,34 +4,64 @@
 #  include <GLFW/glfw3.h>
 #endif
 #include <iostream>
+#include <string>
 #include <vector>
 
 #include "BgColor.h"
 #include "Block.h"
+#include "GameMap.h"
 #include "key_callbacks.h"
 #include "shader.h"
 #include "Triangle.h"
 
-const GLfloat SCREEN_WIDTH   = 450.0f;
-const GLfloat SCREEN_HEIGHT  = 750.0f;
-const int     BLOCK_NUMBER_X = 15;
-const GLfloat BLOCK_WIDTH    = SCREEN_WIDTH / BLOCK_NUMBER_X;
-const GLfloat BLOCK_HEIGHT   = BLOCK_WIDTH;
+const GLfloat     SCREEN_WIDTH   = 450.0f;
+const GLfloat     SCREEN_HEIGHT  = 750.0f;
+const int         BLOCK_NUMBER_X = 15;
+const int         BLOCK_NUMBER_Y = 25;
+const std::string GAME_MAP       = R"(
+...............
+...............
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+#.............#
+###############
+)";
 
-void          init_blocks(
-             std::vector<GLfloat>& blocks, std::vector<GLfloat>& block_colors)
+void              init_blocks(
+                 std::vector<GLfloat>& blocks, std::vector<GLfloat>& block_colors,
+                 GameMap& game_map)
 {
-  GLfloat              w     = BLOCK_WIDTH / SCREEN_WIDTH;
-  GLfloat              h     = BLOCK_HEIGHT / SCREEN_HEIGHT;
-  std::vector<GLfloat> posi  = { 0.0f, 0.0f, 0.0f };
-  std::vector<GLfloat> color = { 0.0f, 1.0f, 1.0f };
-  Block                bl(w, h, posi, color);
-  blocks                     = bl.positions;
-  block_colors               = bl.colors;
-  std::vector<GLfloat> posi2 = { 0.0f, 0.0f + h, 0.0f };
-  Block                bl2(w, h, posi2, color);
-  blocks.insert(blocks.end(), bl2.positions.begin(), bl2.positions.end());
-  block_colors.insert(block_colors.end(), bl2.colors.begin(), bl2.colors.end());
+  std::vector<GLfloat> color = { 0.3f, 0.3f, 0.3f };
+  blocks.resize(0);
+  block_colors.resize(0);
+  for (int i = 0; i < game_map.size(); i++) {
+    if (game_map.game_map[i] == '#') {
+      std::vector<GLfloat> posi = game_map.position(i);
+      Block bl(2.0f / BLOCK_NUMBER_X, 2.0f / BLOCK_NUMBER_Y, posi, color);
+      blocks.insert(blocks.end(), bl.positions.begin(), bl.positions.end());
+      block_colors.insert(
+          block_colors.end(), bl.colors.begin(), bl.colors.end());
+    }
+  }
 }
 
 int main()
@@ -45,7 +75,9 @@ int main()
   std::vector<GLfloat> blocks;
   std::vector<GLfloat> block_colors;
 
-  init_blocks(blocks, block_colors);
+  GameMap              game_map(BLOCK_NUMBER_X, BLOCK_NUMBER_Y, GAME_MAP);
+
+  init_blocks(blocks, block_colors, game_map);
 
   if (! glfwInit()) return 1;
   atexit(glfwTerminate);
@@ -83,8 +115,8 @@ int main()
   glBufferData(
       /* GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), triangle.colors.data(), */
       /* GL_STATIC_DRAW); */
-      GL_ARRAY_BUFFER, 24 * sizeof(GLfloat), block_colors.data(),
-      GL_STATIC_DRAW);
+      GL_ARRAY_BUFFER, block_colors.size() * sizeof(GLfloat),
+      block_colors.data(), GL_STATIC_DRAW);
 
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
@@ -99,14 +131,17 @@ int main()
     glBufferData(
         /* GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), triangle.points.data(), */
         /* GL_STATIC_DRAW); */
-        GL_ARRAY_BUFFER, 24 * sizeof(GLfloat), blocks.data(), GL_STATIC_DRAW);
+        GL_ARRAY_BUFFER, blocks.size() * sizeof(GLfloat), blocks.data(),
+        GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    glDrawArrays(GL_TRIANGLE_FAN, 0, 8);
+    for (int i = 0; i < blocks.size() - 4; i += 4) {
+      glDrawArrays(GL_TRIANGLE_FAN, i, 4);
+    }
 
     glfwPollEvents();
     glfwSwapBuffers(window);

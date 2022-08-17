@@ -46,37 +46,16 @@ const std::string GAME_MAP       = R"(
 ###############
 )";
 
-void              init_blocks(
-                 std::vector<GLfloat>& blocks, std::vector<GLfloat>& block_colors,
-                 GameMap& game_map)
+int               main()
 {
-  std::vector<GLfloat> color = { 0.3f, 0.3f, 0.3f };
-  blocks.resize(0);
-  block_colors.resize(0);
-  for (int i = 0; i < game_map.size(); i++) {
-    if (game_map.game_map[i] == '#') {
-      std::vector<GLfloat> posi = game_map.position(i);
-      Block bl(2.0f / BLOCK_NUMBER_X, 2.0f / BLOCK_NUMBER_Y, posi, color);
-      blocks.insert(blocks.end(), bl.positions.begin(), bl.positions.end());
-      block_colors.insert(
-          block_colors.end(), bl.colors.begin(), bl.colors.end());
-    }
-  }
-}
-
-int main()
-{
-  GLFWwindow*          window = NULL;
-  GLuint               vao;
-  GLuint               vertex_vbo;
-  GLuint               color_vbo;
-  Triangle             triangle;
-  BgColor              bgColor;
-  GameMap              game_map(BLOCK_NUMBER_X, BLOCK_NUMBER_Y, GAME_MAP);
-
-  std::vector<GLfloat> blocks;
-  std::vector<GLfloat> block_colors;
-  init_blocks(blocks, block_colors, game_map);
+  GLFWwindow* window = NULL;
+  GLuint      vao;
+  GLuint      vertex_vbo;
+  GLuint      color_vbo;
+  Triangle    triangle;
+  BgColor     bgColor;
+  GameMap     game_map(BLOCK_NUMBER_X, BLOCK_NUMBER_Y, GAME_MAP);
+  game_map.update_vertexes_and_colors();
 
   if (! glfwInit()) return 1;
   atexit(glfwTerminate);
@@ -112,8 +91,8 @@ int main()
   glGenBuffers(1, &color_vbo);
   glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
   glBufferData(
-      GL_ARRAY_BUFFER, block_colors.size() * sizeof(GLfloat),
-      block_colors.data(), GL_STATIC_DRAW);
+      GL_ARRAY_BUFFER, game_map.colors.size() * sizeof(GLfloat),
+      game_map.colors.data(), GL_STATIC_DRAW);
 
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
@@ -125,15 +104,15 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
     triangle.move();
     glBufferData(
-        GL_ARRAY_BUFFER, blocks.size() * sizeof(GLfloat), blocks.data(),
-        GL_STATIC_DRAW);
+        GL_ARRAY_BUFFER, game_map.vertexes.size() * sizeof(GLfloat),
+        game_map.vertexes.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    for (int i = 0; i < blocks.size() - 4; i += 4) {
+    for (int i = 0; i < game_map.vertexes.size() - 4; i += 4) {
       glDrawArrays(GL_TRIANGLE_FAN, i, 4);
     }
 

@@ -72,11 +72,10 @@ int main()
   GLuint               color_vbo;
   Triangle             triangle;
   BgColor              bgColor;
-  std::vector<GLfloat> blocks;
-  std::vector<GLfloat> block_colors;
-
   GameMap              game_map(BLOCK_NUMBER_X, BLOCK_NUMBER_Y, GAME_MAP);
 
+  std::vector<GLfloat> blocks;
+  std::vector<GLfloat> block_colors;
   init_blocks(blocks, block_colors, game_map);
 
   if (! glfwInit()) return 1;
@@ -113,14 +112,11 @@ int main()
   glGenBuffers(1, &color_vbo);
   glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
   glBufferData(
-      /* GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), triangle.colors.data(), */
-      /* GL_STATIC_DRAW); */
       GL_ARRAY_BUFFER, block_colors.size() * sizeof(GLfloat),
       block_colors.data(), GL_STATIC_DRAW);
 
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
-    bgColor.update();
     glClearColor(bgColor.color[0], bgColor.color[1], bgColor.color[2], 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shader);
@@ -129,8 +125,6 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
     triangle.move();
     glBufferData(
-        /* GL_ARRAY_BUFFER, 18 * sizeof(GLfloat), triangle.points.data(), */
-        /* GL_STATIC_DRAW); */
         GL_ARRAY_BUFFER, blocks.size() * sizeof(GLfloat), blocks.data(),
         GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);

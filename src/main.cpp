@@ -7,12 +7,10 @@
 #include <string>
 #include <vector>
 
-#include "BgColor.h"
 #include "Block.h"
 #include "GameMap.h"
 #include "key_callbacks.h"
 #include "shader.h"
-#include "Triangle.h"
 
 const GLfloat     SCREEN_WIDTH   = 450.0f;
 const GLfloat     SCREEN_HEIGHT  = 750.0f;
@@ -52,8 +50,6 @@ int               main()
   GLuint      vao;
   GLuint      vertex_vbo;
   GLuint      color_vbo;
-  Triangle    triangle;
-  BgColor     bgColor;
   GameMap     game_map(BLOCK_NUMBER_X, BLOCK_NUMBER_Y, GAME_MAP);
   game_map.update_vertexes_and_colors();
 
@@ -96,13 +92,12 @@ int               main()
 
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
-    glClearColor(bgColor.color[0], bgColor.color[1], bgColor.color[2], 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shader);
 
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
-    triangle.move();
     glBufferData(
         GL_ARRAY_BUFFER, game_map.vertexes.size() * sizeof(GLfloat),
         game_map.vertexes.data(), GL_STATIC_DRAW);

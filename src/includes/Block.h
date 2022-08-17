@@ -6,17 +6,25 @@
 #endif
 #include <iostream>
 #include <vector>
+using namespace std;
+
+enum class BlockID { HARD, RED, GREEN, BLUE, PURPLE };
+
+struct BlockType {
+  BlockID         id;
+  vector<GLfloat> color;
+  bool            canBroke;
+};
 
 class Block
 {
  public:
-  GLfloat              w;
-  GLfloat              h;
-  std::vector<GLfloat> position;
-  std::vector<GLfloat> positions;
-  std::vector<GLfloat> color;
-  std::vector<GLfloat> colors;
-  Block(
-      GLfloat _w, GLfloat _h, std::vector<GLfloat> _posi,
-      std::vector<GLfloat> _color);
+  GLfloat         w;
+  GLfloat         h;
+  BlockType&      block_type;
+  vector<GLfloat> position;
+  vector<GLfloat> positions;
+  vector<GLfloat> color;
+  vector<GLfloat> colors;
+  Block(GLfloat _w, GLfloat _h, vector<GLfloat> _posi, int block_types_idx);
 };

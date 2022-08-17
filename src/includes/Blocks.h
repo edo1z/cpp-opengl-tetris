@@ -8,12 +8,20 @@
 
 #include "Block.h"
 
+enum class BlocksID { I, L, T, Z, O };
+
+struct BlocksType {
+  BlocksID             id;
+  vector<vector<char>> blocks_map;
+};
+
 class Blocks
 {
  public:
-  std::vector<GLfloat> map;
-  std::vector<Block>   blocks;
-  std::vector<GLfloat> vertexes;
-  std::vector<GLfloat> colors;
-  Blocks();
+  GLfloat     w;
+  GLfloat     h;
+  int         x;
+  int         y;
+  BlocksType& blocks_type;
+  Blocks(int _x, int _y, int blocks_types_idx);
 };

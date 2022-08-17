@@ -16,6 +16,7 @@ vector<BlockType> block_types {
   BlockType { BlockID::GREEN, vector<GLfloat> { 0.0f, 0.8f, 0.0f },  true},
   BlockType {  BlockID::BLUE, vector<GLfloat> { 0.0f, 0.0f, 0.9f },  true},
   BlockType {BlockID::PURPLE, vector<GLfloat> { 0.6f, 0.0f, 0.6f },  true},
+  BlockType {BlockID::YELLOW, vector<GLfloat> { 0.6f, 0.6f, 0.0f },  true},
 };
 
 Block::Block(GLfloat _w, GLfloat _h, vector<GLfloat> _posi, int block_types_idx)

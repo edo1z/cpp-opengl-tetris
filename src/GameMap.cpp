@@ -30,7 +30,7 @@ void GameMap::init_game_map()
   game_map = default_game_map;
 }
 
-vector<char> enabled_chars = { '#', '.', '1', '2', '3', '4' };
+vector<char> enabled_chars = { '#', '.', '1', '2', '3', '4', '5' };
 
 GameMap::GameMap(int _w, int _h, string _game_map): w(_w), h(_h)
 {
@@ -81,6 +81,11 @@ void GameMap::update_vertexes_and_colors()
       }
       case '4': {
         Block block(w_rate, h_rate, position(i), 4);
+        _insert(_vertexes, _colors, block);
+        break;
+      }
+      case '5': {
+        Block block(w_rate, h_rate, position(i), 5);
         _insert(_vertexes, _colors, block);
         break;
       }

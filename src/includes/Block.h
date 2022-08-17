@@ -8,7 +8,7 @@
 #include <vector>
 using namespace std;
 
-enum class BlockID { HARD, RED, GREEN, BLUE, PURPLE };
+enum class BlockID { HARD, RED, GREEN, BLUE, PURPLE, YELLOW };
 
 struct BlockType {
   BlockID         id;

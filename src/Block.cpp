@@ -24,7 +24,7 @@ Block::Block(GLfloat _w, GLfloat _h, vector<GLfloat> _posi, int block_types_idx)
   GLfloat x = position[0];
   GLfloat y = position[1];
   positions = {
-    x, y, 0.0f, x + w, y, 0.0f, x + w, y + h, 0.0f, x, y + h, 0.0f
+    x, y, 0.0f, x + w, y, 0.0f, x + w, y - h, 0.0f, x, y - h, 0.0f
   };
   GLfloat r = block_type.color[0];
   GLfloat g = block_type.color[1];

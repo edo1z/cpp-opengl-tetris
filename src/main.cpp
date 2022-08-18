@@ -13,38 +13,7 @@
 #include "shader.h"
 using namespace std;
 
-const GLfloat SCREEN_WIDTH   = 450.0f;
-const GLfloat SCREEN_HEIGHT  = 750.0f;
-const int     BLOCK_NUMBER_X = 15;
-const int     BLOCK_NUMBER_Y = 25;
-
-const string GAME_MAP = R"(
-...............
-...............
-...............
-...............
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#.............#
-#1............#
-#1....44......#
-#122.3.4......#
-#1223334......#
-###############
-)";
+const int BLOCK_SIZE = 30;  // 1ブロックの幅・高さ
 
 int main()
 {
@@ -52,7 +21,9 @@ int main()
   GLuint      vao;
   GLuint      vertex_vbo;
   GLuint      color_vbo;
-  GameMap     game_map(BLOCK_NUMBER_X, BLOCK_NUMBER_Y, GAME_MAP);
+  GameMap     game_map(BLOCK_SIZE);
+  GLfloat     screen_w = game_map.screen_w();
+  GLfloat     screen_h = game_map.screen_h();
   game_map.update_vertexes_and_colors();
 
   if (! glfwInit()) return 1;
@@ -64,7 +35,7 @@ int main()
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
   window =
-      glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hello World", NULL, NULL);
+      glfwCreateWindow(screen_w, screen_h, "C++ OpenGL テトリス", NULL, NULL);
   if (! window) {
     cerr << "Failed to create window." << endl;
     return 1;

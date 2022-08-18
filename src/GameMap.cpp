@@ -12,34 +12,61 @@
 
 using namespace std;
 
-int GameMap::size()
+const vector<vector<char>> DEFAULT_GAME_MAP = {
+  {'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
+  {'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
+  {'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
+  {'.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '1', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '1', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '1', '2', '2', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '1', '2', '2', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'},
+  {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'},
+};
+
+int GameMap::screen_w()
 {
-  return w * h;
+  return block_size * w;
 }
-vector<GLfloat> GameMap::position(int idx)
+
+int GameMap::screen_h()
 {
-  int     x_idx = idx % w;
-  int     y_idx = idx / w;
-  GLfloat x     = -1.0f + 2.0f / w * x_idx;
-  GLfloat y     = 1.0f - 2.0f / h * y_idx;
+  return block_size * h;
+}
+
+vector<GLfloat> GameMap::position(int x_idx, int y_idx)
+{
+  GLfloat x = -1.0f + 2.0f / w * x_idx;
+  GLfloat y = 1.0f - 2.0f / h * y_idx;
   return vector<GLfloat> { x, y };
 }
 
 void GameMap::init_game_map()
 {
-  game_map = default_game_map;
+  game_map = DEFAULT_GAME_MAP;
 }
 
-vector<char> enabled_chars = { '#', '.', '1', '2', '3', '4', '5' };
-
-GameMap::GameMap(int _w, int _h, string _game_map): w(_w), h(_h)
+GameMap::GameMap(int _block_size)
+    : w(DEFAULT_GAME_MAP[0].size())
+    , h(DEFAULT_GAME_MAP.size())
+    , block_size(_block_size)
 {
-  for (char c : _game_map) {
-    auto result = find(enabled_chars.begin(), enabled_chars.end(), c);
-    if (result != enabled_chars.end()) {
-      default_game_map.push_back(c);
-    }
-  }
   init_game_map();
 }
 
@@ -56,38 +83,40 @@ void GameMap::update_vertexes_and_colors()
   vector<GLfloat> _colors;
   GLfloat         w_rate = 2.0f / w;
   GLfloat         h_rate = 2.0f / h;
-  for (int i = 0; i < size(); i++) {
-    switch (game_map[i]) {
-      case '#':
-      case '0': {
-        Block block(w_rate, h_rate, position(i), 0);
-        _insert(_vertexes, _colors, block);
-        break;
-      }
-      case '1': {
-        Block block(w_rate, h_rate, position(i), 1);
-        _insert(_vertexes, _colors, block);
-        break;
-      }
-      case '2': {
-        Block block(w_rate, h_rate, position(i), 2);
-        _insert(_vertexes, _colors, block);
-        break;
-      }
-      case '3': {
-        Block block(w_rate, h_rate, position(i), 3);
-        _insert(_vertexes, _colors, block);
-        break;
-      }
-      case '4': {
-        Block block(w_rate, h_rate, position(i), 4);
-        _insert(_vertexes, _colors, block);
-        break;
-      }
-      case '5': {
-        Block block(w_rate, h_rate, position(i), 5);
-        _insert(_vertexes, _colors, block);
-        break;
+  for (int y_idx = 0; y_idx < h; y_idx++) {
+    for (int x_idx = 0; x_idx < w; x_idx++) {
+      switch (game_map[y_idx][x_idx]) {
+        case '#':
+        case '0': {
+          Block block(w_rate, h_rate, position(x_idx, y_idx), 0);
+          _insert(_vertexes, _colors, block);
+          break;
+        }
+        case '1': {
+          Block block(w_rate, h_rate, position(x_idx, y_idx), 1);
+          _insert(_vertexes, _colors, block);
+          break;
+        }
+        case '2': {
+          Block block(w_rate, h_rate, position(x_idx, y_idx), 2);
+          _insert(_vertexes, _colors, block);
+          break;
+        }
+        case '3': {
+          Block block(w_rate, h_rate, position(x_idx, y_idx), 3);
+          _insert(_vertexes, _colors, block);
+          break;
+        }
+        case '4': {
+          Block block(w_rate, h_rate, position(x_idx, y_idx), 4);
+          _insert(_vertexes, _colors, block);
+          break;
+        }
+        case '5': {
+          Block block(w_rate, h_rate, position(x_idx, y_idx), 5);
+          _insert(_vertexes, _colors, block);
+          break;
+        }
       }
     }
   }

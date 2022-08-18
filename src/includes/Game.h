@@ -14,7 +14,7 @@ using namespace std;
 using namespace std::chrono;
 
 const int   BLOCK_SIZE    = 25;   // 1ブロックの幅・高さ
-const float FALL_INTERVAL = 300;  // 下落の時間間隔（ミリ秒）
+const float FALL_INTERVAL = 100;  // 下落の時間間隔（ミリ秒）
 
 class Game
 {
@@ -29,6 +29,9 @@ class Game
   void  update_vertexes_and_colors();
   float time_after_fall();  // 前回の下落からの経過時間（秒）
   void  fall();             // ブロックを下落させる
+  bool  is_collistion_blocks(vector<vector<int>> indexes, int x_vec, int y_vec);
+  void  fix_blocks(vector<vector<int>> indexes);
+  void  next_blocks_to_now_blocks();
 
  private:
   system_clock::time_point falling_time;

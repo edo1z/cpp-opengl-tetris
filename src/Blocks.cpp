@@ -56,3 +56,19 @@ void Blocks::fall()
 {
   y++;
 }
+
+vector<vector<int>> Blocks::block_indexes()
+{
+  vector<vector<char>>& m = blocks_type.blocks_map;
+  int                   w, h;
+  w = h = m.size();
+  vector<vector<int>> indexes;
+  for (int y_idx = 0; y_idx < h; y_idx++) {
+    for (int x_idx = 0; x_idx < w; x_idx++) {
+      if (m[y_idx][x_idx] != '.') {
+        indexes.push_back(vector<int> { x_idx + x, y_idx + y });
+      }
+    }
+  }
+  return indexes;
+}

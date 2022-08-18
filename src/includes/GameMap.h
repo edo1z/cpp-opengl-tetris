@@ -25,5 +25,6 @@ class GameMap
                       int x_idx, int y_idx, char c, vector<GLfloat>& vertexes, vector<GLfloat>& colors);
   void            update_vertexes_and_colors();
   vector<GLfloat> position(int x_idx, int y_idx);
+  bool is_collision(int x_idx, int y_idx, int x_vec, int y_vec);  // 衝突しているか？
   GameMap(int block_size);
 };

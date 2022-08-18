@@ -126,3 +126,11 @@ void GameMap::update_vertexes_and_colors()
   vertexes = _vertexes;
   colors   = _colors;
 }
+
+bool GameMap::is_collision(int x_idx, int y_idx, int x_vec, int y_vec)
+{
+  x_idx += x_vec;
+  y_idx += y_vec;
+  if (game_map[y_idx][x_idx] == '.') return false;
+  return true;
+}

@@ -30,8 +30,38 @@ float Game::time_after_fall()
 void Game::fall()
 {
   if (time_after_fall() < FALL_INTERVAL) return;
-  now_blocks.fall();
+  vector<vector<int>> indexes = now_blocks.block_indexes();
+  if (is_collistion_blocks(indexes, 0, 1)) {
+    fix_blocks(indexes);
+    /* next_blocks_to_now_blocks(); */
+  } else {
+    now_blocks.fall();
+  }
   falling_time = system_clock::now();
+}
+
+bool Game::is_collistion_blocks(vector<vector<int>> indexes, int x_vec, int y_vec)
+{
+  for (vector<int> xy : indexes) {
+    if (gamemap.is_collision(xy[0], xy[1], x_vec, y_vec)) return true;
+  }
+  return false;
+}
+
+void Game::fix_blocks(vector<vector<int>> indexes)
+{
+  for (int i = 0; i < indexes.size(); i++) {
+    int  x_idx = indexes[i][0];
+    int  y_idx = indexes[i][1];
+    char c     = now_blocks.blocks_type.blocks_map[y_idx - now_blocks.y][x_idx - now_blocks.x];
+    gamemap.game_map[y_idx][x_idx] = c;
+  }
+}
+
+void Game::next_blocks_to_now_blocks()
+{
+  /* now_blocks  = next_blocks; */
+  /* next_blocks = random_blocks(0, 0); */
 }
 
 Blocks Game::random_blocks(int x, int y)

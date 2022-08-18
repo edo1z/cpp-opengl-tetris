@@ -13,10 +13,10 @@ using namespace std;
 vector<BlocksType> blocks_types {
   BlocksType {BlocksID::I,
               vector<vector<char>> {
-              { '.', '.', '1', '.' },
-              { '.', '.', '1', '.' },
-              { '.', '.', '1', '.' },
-              { '.', '.', '1', '.' },
+              { '.', '.', '.', '.' },
+              { '1', '1', '1', '1' },
+              { '.', '.', '.', '.' },
+              { '.', '.', '.', '.' },
               }},
   BlocksType {BlocksID::L,
               vector<vector<char>> {

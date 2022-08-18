@@ -4,6 +4,7 @@
 #  include <GLFW/glfw3.h>
 #endif
 #include <iostream>
+#include <random>
 #include <vector>
 
 #include "Block.h"
@@ -19,7 +20,8 @@ Game::Game()
 
 Blocks Game::random_blocks(int x, int y)
 {
-  return Blocks(x, y, 0);
+  random_device rnd;
+  return Blocks(x, y, rnd() % 5);
 }
 
 void Game::update_vertexes_and_colors()

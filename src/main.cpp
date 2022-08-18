@@ -7,10 +7,7 @@
 #include <string>
 #include <vector>
 
-#include "Block.h"
-#include "Blocks.h"
 #include "Game.h"
-#include "GameMap.h"
 #include "key_callbacks.h"
 #include "shader.h"
 using namespace std;

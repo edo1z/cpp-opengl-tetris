@@ -33,7 +33,7 @@ void Game::fall()
   vector<vector<int>> indexes = now_blocks.block_indexes();
   if (is_collistion_blocks(indexes, 0, 1)) {
     fix_blocks(indexes);
-    /* next_blocks_to_now_blocks(); */
+    next_blocks_to_now_blocks();
   } else {
     now_blocks.fall();
   }
@@ -60,8 +60,9 @@ void Game::fix_blocks(vector<vector<int>> indexes)
 
 void Game::next_blocks_to_now_blocks()
 {
-  /* now_blocks  = next_blocks; */
-  /* next_blocks = random_blocks(0, 0); */
+  next_blocks.x = 6;
+  now_blocks    = next_blocks;
+  next_blocks   = random_blocks(0, 0);
 }
 
 Blocks Game::random_blocks(int x, int y)

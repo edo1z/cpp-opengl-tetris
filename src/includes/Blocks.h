@@ -18,9 +18,9 @@ struct BlocksType {
 class Blocks
 {
  public:
-  int         x;  // GameMap上のXのindex
-  int         y;  // GameMap上のYのindex
-  BlocksType& blocks_type;
+  int        x;  // GameMap上のXのindex
+  int        y;  // GameMap上のYのindex
+  BlocksType blocks_type;
   Blocks(int _x, int _y, int blocks_types_idx);
   void                fall();
   vector<vector<int>> block_indexes();

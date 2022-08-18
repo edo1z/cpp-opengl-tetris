@@ -11,12 +11,14 @@
 #include "GameMap.h"
 #include "key_callbacks.h"
 #include "shader.h"
+using namespace std;
 
-const GLfloat     SCREEN_WIDTH   = 450.0f;
-const GLfloat     SCREEN_HEIGHT  = 750.0f;
-const int         BLOCK_NUMBER_X = 15;
-const int         BLOCK_NUMBER_Y = 25;
-const std::string GAME_MAP       = R"(
+const GLfloat SCREEN_WIDTH   = 450.0f;
+const GLfloat SCREEN_HEIGHT  = 750.0f;
+const int     BLOCK_NUMBER_X = 15;
+const int     BLOCK_NUMBER_Y = 25;
+
+const string GAME_MAP = R"(
 ...............
 ...............
 ...............
@@ -44,7 +46,7 @@ const std::string GAME_MAP       = R"(
 ###############
 )";
 
-int               main()
+int main()
 {
   GLFWwindow* window = NULL;
   GLuint      vao;
@@ -64,7 +66,7 @@ int               main()
   window =
       glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hello World", NULL, NULL);
   if (! window) {
-    std::cerr << "Failed to create window." << std::endl;
+    cerr << "Failed to create window." << endl;
     return 1;
   }
 
@@ -73,7 +75,7 @@ int               main()
   glfwSwapInterval(1);
   glewExperimental = GL_TRUE;
   if (glewInit() != GLEW_OK) {
-    std::cerr << "Can't initialize GLEW" << std::endl;
+    cerr << "Can't initialize GLEW" << endl;
     return 1;
   }
 

@@ -10,8 +10,8 @@
 #include "Blocks.h"
 using namespace std;
 
-const int          BLOCKS_W = 4;
-const int          BLOCKS_H = 4;
+const int BLOCKS_W = 4;
+const int BLOCKS_H = 4;
 
 vector<BlocksType> blocks_types {
   BlocksType {BlocksID::I,

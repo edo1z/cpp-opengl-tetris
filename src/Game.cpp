@@ -3,6 +3,7 @@
 #  include <GL/glew.h>
 #  include <GLFW/glfw3.h>
 #endif
+#include <chrono>
 #include <iostream>
 #include <random>
 #include <vector>
@@ -11,12 +12,27 @@
 #include "Blocks.h"
 #include "Game.h"
 using namespace std;
+using namespace std::chrono;
 
 Game::Game()
     : now_blocks(random_blocks(6, 0))
     , next_blocks(random_blocks(0, 0))
     , gamemap(GameMap(BLOCK_SIZE))
+    , falling_time(system_clock::now())
 {}
+
+float Game::time_after_fall()
+{
+  system_clock::time_point now = system_clock::now();
+  return duration_cast<milliseconds>(now - falling_time).count();
+}
+
+void Game::fall()
+{
+  if (time_after_fall() < FALL_INTERVAL) return;
+  now_blocks.fall();
+  falling_time = system_clock::now();
+}
 
 Blocks Game::random_blocks(int x, int y)
 {

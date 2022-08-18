@@ -51,3 +51,8 @@ vector<BlocksType> blocks_types {
 Blocks::Blocks(int _x, int _y, int blocks_types_idx)
     : x(_x), y(_y), blocks_type(blocks_types[blocks_types_idx])
 {}
+
+void Blocks::fall()
+{
+  y++;
+}

@@ -18,10 +18,8 @@ struct BlocksType {
 class Blocks
 {
  public:
-  GLfloat     w;
-  GLfloat     h;
-  int         x;
-  int         y;
+  int         x;  // GameMap上のXのindex
+  int         y;  // GameMap上のYのindex
   BlocksType& blocks_type;
   Blocks(int _x, int _y, int blocks_types_idx);
 };

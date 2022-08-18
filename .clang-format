@@ -32,6 +32,7 @@ BreakInheritanceList: BeforeComma
 BreakStringLiterals: true
 CompactNamespaces: true
 Cpp11BracedListStyle: false
+ColumnLimit: 100
 EmptyLineAfterAccessModifier: Leave
 EmptyLineBeforeAccessModifier: LogicalBlock
 IndentPPDirectives: AfterHash

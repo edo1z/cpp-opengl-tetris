@@ -8,12 +8,12 @@
 #include <vector>
 
 #include "Block.h"
+#include "Blocks.h"
+#include "Game.h"
 #include "GameMap.h"
 #include "key_callbacks.h"
 #include "shader.h"
 using namespace std;
-
-const int BLOCK_SIZE = 30;  // 1ブロックの幅・高さ
 
 int main()
 {
@@ -21,10 +21,11 @@ int main()
   GLuint      vao;
   GLuint      vertex_vbo;
   GLuint      color_vbo;
-  GameMap     game_map(BLOCK_SIZE);
-  GLfloat     screen_w = game_map.screen_w();
-  GLfloat     screen_h = game_map.screen_h();
-  game_map.update_vertexes_and_colors();
+  Game        game;
+  GLfloat     screen_w = game.gamemap.screen_w();
+  GLfloat     screen_h = game.gamemap.screen_h();
+
+  game.update_vertexes_and_colors();
 
   if (! glfwInit()) return 1;
   atexit(glfwTerminate);
@@ -34,8 +35,7 @@ int main()
   glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  window =
-      glfwCreateWindow(screen_w, screen_h, "C++ OpenGL テトリス", NULL, NULL);
+  window = glfwCreateWindow(screen_w, screen_h, "C++ OpenGL テトリス", NULL, NULL);
   if (! window) {
     cerr << "Failed to create window." << endl;
     return 1;
@@ -60,8 +60,7 @@ int main()
   glGenBuffers(1, &color_vbo);
   glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
   glBufferData(
-      GL_ARRAY_BUFFER, game_map.colors.size() * sizeof(GLfloat),
-      game_map.colors.data(), GL_STATIC_DRAW);
+      GL_ARRAY_BUFFER, game.colors.size() * sizeof(GLfloat), game.colors.data(), GL_STATIC_DRAW);
 
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
@@ -72,15 +71,15 @@ int main()
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
     glBufferData(
-        GL_ARRAY_BUFFER, game_map.vertexes.size() * sizeof(GLfloat),
-        game_map.vertexes.data(), GL_STATIC_DRAW);
+        GL_ARRAY_BUFFER, game.vertexes.size() * sizeof(GLfloat), game.vertexes.data(),
+        GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    for (int i = 0; i < game_map.vertexes.size() - 4; i += 4) {
+    for (int i = 0; i < game.vertexes.size() - 4; i += 4) {
       glDrawArrays(GL_TRIANGLE_FAN, i, 4);
     }
 

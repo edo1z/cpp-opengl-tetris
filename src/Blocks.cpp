@@ -10,9 +10,6 @@
 #include "Blocks.h"
 using namespace std;
 
-const int BLOCKS_W = 4;
-const int BLOCKS_H = 4;
-
 vector<BlocksType> blocks_types {
   BlocksType {BlocksID::I,
               vector<vector<char>> {
@@ -52,9 +49,5 @@ vector<BlocksType> blocks_types {
 };
 
 Blocks::Blocks(int _x, int _y, int blocks_types_idx)
-    : w(BLOCKS_W)
-    , h(BLOCKS_H)
-    , x(_x)
-    , y(_y)
-    , blocks_type(blocks_types[blocks_types_idx])
+    : x(_x), y(_y), blocks_type(blocks_types[blocks_types_idx])
 {}

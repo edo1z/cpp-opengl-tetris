@@ -69,9 +69,6 @@ int main()
   glGenVertexArrays(1, &vao);
   glBindVertexArray(vao);
 
-  glGenBuffers(1, &vertex_vbo);
-  glGenBuffers(1, &color_vbo);
-
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
     game.update();
@@ -85,12 +82,14 @@ int main()
     glUseProgram(shader);
 
     glEnableVertexAttribArray(0);
+    glGenBuffers(1, &vertex_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
     glBufferData(
         GL_ARRAY_BUFFER, vertexes.size() * sizeof(GLfloat), vertexes.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
     glEnableVertexAttribArray(1);
+    glGenBuffers(1, &color_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
     glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(GLfloat), colors.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);

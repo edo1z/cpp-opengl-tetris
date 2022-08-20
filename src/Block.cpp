@@ -15,8 +15,8 @@ vector<BlockType> block_types {
   BlockType {   BlockID::RED, vector<GLfloat> { 0.8f, 0.0f, 0.0f },  true},
   BlockType { BlockID::GREEN, vector<GLfloat> { 0.0f, 0.8f, 0.0f },  true},
   BlockType {  BlockID::BLUE, vector<GLfloat> { 0.0f, 0.0f, 0.9f },  true},
-  BlockType {BlockID::PURPLE, vector<GLfloat> { 0.6f, 0.0f, 0.6f },  true},
-  BlockType {BlockID::YELLOW, vector<GLfloat> { 0.6f, 0.6f, 0.0f },  true},
+  BlockType {BlockID::PURPLE, vector<GLfloat> { 0.8f, 0.0f, 0.8f },  true},
+  BlockType {BlockID::YELLOW, vector<GLfloat> { 0.8f, 0.8f, 0.0f },  true},
 };
 
 Block::Block(GLfloat _w, GLfloat _h, vector<GLfloat> _posi, int block_types_idx)
@@ -24,9 +24,7 @@ Block::Block(GLfloat _w, GLfloat _h, vector<GLfloat> _posi, int block_types_idx)
 {
   GLfloat x = position[0];
   GLfloat y = position[1];
-  positions = {
-    x, y, 0.0f, x + w, y, 0.0f, x + w, y - h, 0.0f, x, y - h, 0.0f
-  };
+  positions = { x, y, 0.0f, x + w, y, 0.0f, x + w, y - h, 0.0f, x, y - h, 0.0f };
   GLfloat r = block_type.color[0];
   GLfloat g = block_type.color[1];
   GLfloat b = block_type.color[2];

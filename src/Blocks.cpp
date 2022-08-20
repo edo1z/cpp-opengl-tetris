@@ -57,6 +57,16 @@ void Blocks::fall()
   y++;
 }
 
+void Blocks::go_left()
+{
+  x--;
+}
+
+void Blocks::go_right()
+{
+  x++;
+}
+
 vector<vector<int>> Blocks::block_indexes()
 {
   vector<vector<char>>& m = blocks_type.blocks_map;

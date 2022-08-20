@@ -8,9 +8,27 @@
 #include <vector>
 
 #include "Game.h"
-#include "key_callbacks.h"
 #include "shader.h"
 using namespace std;
+
+vector<int> inputs(512);
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+  } else if (key == GLFW_KEY_A && action == GLFW_PRESS) {
+    inputs[GLFW_KEY_A]++;
+  } else if (key == GLFW_KEY_S && action == GLFW_PRESS) {
+    inputs[GLFW_KEY_S]++;
+  } else if (key == GLFW_KEY_D && action == GLFW_PRESS) {
+    inputs[GLFW_KEY_D]++;
+  } else if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
+    inputs[GLFW_KEY_Q]++;
+  } else if (key == GLFW_KEY_E && action == GLFW_PRESS) {
+    inputs[GLFW_KEY_E]++;
+  }
+}
 
 int main()
 {
@@ -18,7 +36,7 @@ int main()
   GLuint      vao;
   GLuint      vertex_vbo;
   GLuint      color_vbo;
-  Game        game;
+  Game        game(inputs);
   GLfloat     screen_w = game.gamemap.screen_w();
   GLfloat     screen_h = game.gamemap.screen_h();
 
@@ -56,7 +74,7 @@ int main()
 
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
-    game.fall();
+    game.update();
     game.update_vertexes_and_colors();
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

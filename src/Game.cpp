@@ -14,8 +14,9 @@
 using namespace std;
 using namespace std::chrono;
 
-Game::Game()
-    : now_blocks(random_blocks(6, 0))
+Game::Game(vector<int>& _inputs)
+    : inputs(_inputs)
+    , now_blocks(random_blocks(6, 0))
     , next_blocks(random_blocks(0, 0))
     , gamemap(GameMap(BLOCK_SIZE))
     , falling_time(system_clock::now())
@@ -27,9 +28,40 @@ float Game::time_after_fall()
   return duration_cast<milliseconds>(now - falling_time).count();
 }
 
+void Game::update()
+{
+  if (inputs[GLFW_KEY_A] > 0 && inputs[GLFW_KEY_D] > 0) {
+    inputs[GLFW_KEY_A] = 0;
+    inputs[GLFW_KEY_D] = 0;
+  } else if (inputs[GLFW_KEY_A] > 0) {
+    inputs[GLFW_KEY_A]          = 0;
+    vector<vector<int>> indexes = now_blocks.block_indexes();
+    if (! is_collistion_blocks(indexes, -1, 0)) {
+      now_blocks.go_left();
+    }
+  } else if (inputs[GLFW_KEY_D] > 0) {
+    inputs[GLFW_KEY_D]          = 0;
+    vector<vector<int>> indexes = now_blocks.block_indexes();
+    if (! is_collistion_blocks(indexes, 1, 0)) {
+      now_blocks.go_right();
+    }
+  }
+  if (time_after_fall() < FALL_INTERVAL) {
+    if (inputs[GLFW_KEY_S] > 0) {
+      inputs[GLFW_KEY_S]          = 0;
+      vector<vector<int>> indexes = now_blocks.block_indexes();
+      if (! is_collistion_blocks(indexes, 0, 1)) {
+        now_blocks.fall();
+      }
+    }
+  } else {
+    fall();
+  }
+}
+
 void Game::fall()
 {
-  if (time_after_fall() < FALL_INTERVAL) return;
+  inputs[GLFW_KEY_S]          = 0;
   vector<vector<int>> indexes = now_blocks.block_indexes();
   if (is_collistion_blocks(indexes, 0, 1)) {
     fix_blocks(indexes);

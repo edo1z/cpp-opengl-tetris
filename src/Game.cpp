@@ -140,45 +140,45 @@ Blocks Game::random_blocks(int x, int y)
   return Blocks(x, y, rnd() % 5);
 }
 
-map<string, vector<GLfloat>> Game::update_vertexes_and_colors()
+vector<vector<char>> Game::merged_map()
 {
-  vector<GLfloat> _vertexes;
-  vector<GLfloat> _colors;
-  gamemap.update_vertexes_and_colors();
-  _vertexes = gamemap.vertexes;
-  _colors   = gamemap.colors;
-  int                   y_idx, x_idx, _x_idx, _y_idx;
-  char                  c;
-  vector<vector<char>>& now_map  = now_blocks.blocks_type.blocks_map;
-  vector<vector<char>>& next_map = next_blocks.blocks_type.blocks_map;
-  for (_y_idx = 0; _y_idx < now_map.size(); _y_idx++) {
-    for (_x_idx = 0; _x_idx < now_map[0].size(); _x_idx++) {
-      c     = now_map[_y_idx][_x_idx];
-      x_idx = _x_idx + now_blocks.x;
-      y_idx = _y_idx + now_blocks.y;
-      gamemap.insert_vertexes_and_colors(x_idx, y_idx, c, _vertexes, _colors);
+  vector<vector<char>>  tmp_map         = gamemap.game_map;
+  vector<vector<char>>& now_blocks_map  = now_blocks.blocks_type.blocks_map;
+  vector<vector<char>>& next_blocks_map = next_blocks.blocks_type.blocks_map;
+  int                   x, y;
+  for (y = 0; y < now_blocks_map.size(); y++) {
+    for (x = 0; x < now_blocks_map[0].size(); x++) {
+      if (now_blocks_map[y][x] != '.') {
+        tmp_map[y + now_blocks.y][x + now_blocks.x] = now_blocks_map[y][x];
+      }
     }
   }
-  for (_y_idx = 0; _y_idx < next_map.size(); _y_idx++) {
-    for (_x_idx = 0; _x_idx < next_map[0].size(); _x_idx++) {
-      c     = next_map[_y_idx][_x_idx];
-      x_idx = _x_idx + next_blocks.x;
-      y_idx = _y_idx + next_blocks.y;
-      gamemap.insert_vertexes_and_colors(x_idx, y_idx, c, _vertexes, _colors);
+  for (y = 0; y < next_blocks_map.size(); y++) {
+    for (x = 0; x < next_blocks_map[0].size(); x++) {
+      if (next_blocks_map[y][x] != '.') {
+        tmp_map[y + next_blocks.y][x + next_blocks.x] = next_blocks_map[y][x];
+      }
     }
   }
-  return map<string, vector<GLfloat>> {
-    {"vertexes", _vertexes},
-    {  "colors",   _colors},
-  };
+  return tmp_map;
 }
 
-void Game::display_map_in_terminal()
+vector<GLfloat> Game::vertexes(vector<vector<char>>& merged_map)
+{
+  return gamemap.vertexes_of_map(merged_map);
+}
+
+vector<GLfloat> Game::colors(vector<vector<char>>& merged_map)
+{
+  return gamemap.colors_of_map(merged_map);
+}
+
+void Game::display_map_in_terminal(vector<vector<char>>& merged_map)
 {
   system("clear");
-  for (int i = 0; i < gamemap.game_map.size(); i++) {
-    for (int j = 0; j < gamemap.game_map[0].size(); j++) {
-      cout << gamemap.game_map[i][j] << " ";
+  for (int y = 0; y < merged_map.size(); y++) {
+    for (int x = 0; x < merged_map[0].size(); x++) {
+      cout << merged_map[y][x] << " ";
     }
     cout << endl;
   }

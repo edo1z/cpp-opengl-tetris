@@ -51,6 +51,15 @@ int GameMap::screen_h()
   return block_size * h;
 }
 
+int GameMap::map_w()
+{
+  return game_map[0].size();
+}
+int GameMap::map_h()
+{
+  return game_map.size();
+}
+
 vector<GLfloat> GameMap::position(int x_idx, int y_idx)
 {
   GLfloat x = -1.0f + 2.0f / w * x_idx;
@@ -69,63 +78,68 @@ GameMap::GameMap(int _block_size)
   init_game_map();
 }
 
-void _insert(vector<GLfloat>& _vertexes, vector<GLfloat>& _colors, Block& block)
-{
-  _vertexes.insert(_vertexes.end(), block.positions.begin(), block.positions.end());
-  _colors.insert(_colors.end(), block.colors.begin(), block.colors.end());
-}
-
-void GameMap::insert_vertexes_and_colors(
-    int x_idx, int y_idx, char c, vector<GLfloat>& vertexes, vector<GLfloat>& colors)
+Block GameMap::block_from_index_and_char(int x, int y, char c)
 {
   GLfloat w_rate = 2.0f / w;
   GLfloat h_rate = 2.0f / h;
   switch (c) {
     case '#':
     case '0': {
-      Block block(w_rate, h_rate, position(x_idx, y_idx), 0);
-      _insert(vertexes, colors, block);
-      break;
+      Block block(w_rate, h_rate, position(x, y), 0);
+      return block;
     }
     case '1': {
-      Block block(w_rate, h_rate, position(x_idx, y_idx), 1);
-      _insert(vertexes, colors, block);
-      break;
+      Block block(w_rate, h_rate, position(x, y), 1);
+      return block;
     }
     case '2': {
-      Block block(w_rate, h_rate, position(x_idx, y_idx), 2);
-      _insert(vertexes, colors, block);
-      break;
+      Block block(w_rate, h_rate, position(x, y), 2);
+      return block;
     }
     case '3': {
-      Block block(w_rate, h_rate, position(x_idx, y_idx), 3);
-      _insert(vertexes, colors, block);
-      break;
+      Block block(w_rate, h_rate, position(x, y), 3);
+      return block;
     }
     case '4': {
-      Block block(w_rate, h_rate, position(x_idx, y_idx), 4);
-      _insert(vertexes, colors, block);
-      break;
+      Block block(w_rate, h_rate, position(x, y), 4);
+      return block;
     }
     case '5': {
-      Block block(w_rate, h_rate, position(x_idx, y_idx), 5);
-      _insert(vertexes, colors, block);
-      break;
+      Block block(w_rate, h_rate, position(x, y), 5);
+      return block;
+    }
+    default: {
+      Block block(w_rate, h_rate, position(-100, -100), 0);
+      return block;
     }
   }
 }
 
-void GameMap::update_vertexes_and_colors()
+vector<GLfloat> GameMap::vertexes_of_map(vector<vector<char>>& m)
 {
-  vector<GLfloat> _vertexes;
-  vector<GLfloat> _colors;
-  for (int y_idx = 0; y_idx < h; y_idx++) {
-    for (int x_idx = 0; x_idx < w; x_idx++) {
-      insert_vertexes_and_colors(x_idx, y_idx, game_map[y_idx][x_idx], _vertexes, _colors);
+  vector<GLfloat> vertexes;
+  for (int y = 0; y < m.size(); y++) {
+    for (int x = 0; x < m[0].size(); x++) {
+      if (m[y][x] != '.') {
+        Block b = block_from_index_and_char(x, y, m[y][x]);
+        vertexes.insert(vertexes.end(), b.positions.begin(), b.positions.end());
+      }
     }
   }
-  vertexes = _vertexes;
-  colors   = _colors;
+  return vertexes;
+}
+vector<GLfloat> GameMap::colors_of_map(vector<vector<char>>& m)
+{
+  vector<GLfloat> colors;
+  for (int y = 0; y < m.size(); y++) {
+    for (int x = 0; x < m[0].size(); x++) {
+      if (m[y][x] != '.') {
+        Block b = block_from_index_and_char(x, y, m[y][x]);
+        colors.insert(colors.end(), b.colors.begin(), b.colors.end());
+      }
+    }
+  }
+  return colors;
 }
 
 bool GameMap::is_collision(int x_idx, int y_idx, int x_vec, int y_vec)
@@ -162,5 +176,5 @@ void GameMap::delete_rows(vector<int> deletable_rows)
         tmp_map.begin() + GAMEOVER_LINE + 1, DEFAULT_GAME_MAP.begin() + GAMEOVER_LINE + 1,
         DEFAULT_GAME_MAP.begin() + GAMEOVER_LINE + 2);
   }
-  /* game_map = tmp_map; */
+  game_map = tmp_map;
 }

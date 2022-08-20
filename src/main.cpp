@@ -75,7 +75,8 @@ int main()
   GLint shader = makeShader();
   while (! glfwWindowShouldClose(window)) {
     game.update();
-    game.update_vertexes_and_colors();
+    map<string, vector<GLfloat>> vbo_data = game.update_vertexes_and_colors();
+    game.display_map_in_terminal();
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shader);
@@ -83,17 +84,18 @@ int main()
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_vbo);
     glBufferData(
-        GL_ARRAY_BUFFER, game.vertexes.size() * sizeof(GLfloat), game.vertexes.data(),
+        GL_ARRAY_BUFFER, vbo_data["vertexes"].size() * sizeof(GLfloat), vbo_data["vertexes"].data(),
         GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
     glEnableVertexAttribArray(1);
     glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
     glBufferData(
-        GL_ARRAY_BUFFER, game.colors.size() * sizeof(GLfloat), game.colors.data(), GL_STATIC_DRAW);
+        GL_ARRAY_BUFFER, vbo_data["colors"].size() * sizeof(GLfloat), vbo_data["colors"].data(),
+        GL_STATIC_DRAW);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
 
-    for (int i = 0; i < game.vertexes.size() - 4; i += 4) {
+    for (int i = 0; i < vbo_data["vertexes"].size() - 4; i += 4) {
       glDrawArrays(GL_TRIANGLE_FAN, i, 4);
     }
 

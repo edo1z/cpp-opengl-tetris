@@ -9,6 +9,8 @@
 #include <vector>
 
 using namespace std;
+const int BOTTOM_ROWS   = 1;  // 底の行数
+const int GAMEOVER_LINE = 4;  // ゲームオーバになる行（yのindex）
 
 class GameMap
 {
@@ -25,6 +27,8 @@ class GameMap
                       int x_idx, int y_idx, char c, vector<GLfloat>& vertexes, vector<GLfloat>& colors);
   void            update_vertexes_and_colors();
   vector<GLfloat> position(int x_idx, int y_idx);
-  bool is_collision(int x_idx, int y_idx, int x_vec, int y_vec);  // 衝突しているか？
+  bool            is_collision(int x_idx, int y_idx, int x_vec, int y_vec);
+  vector<int>     deletable_rows();  // 削除可能な行のindexを返す
+  void            delete_rows(vector<int> deletable_rows);
   GameMap(int block_size);
 };

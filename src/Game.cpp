@@ -5,6 +5,7 @@
 #endif
 #include <chrono>
 #include <iostream>
+#include <map>
 #include <random>
 #include <vector>
 
@@ -73,6 +74,15 @@ void Game::update()
   }
 }
 
+void Game::delete_block_lines()
+{
+  vector<int> deletable_rows = gamemap.deletable_rows();
+  int         row_num        = deletable_rows.size();
+  if (row_num == 0) return;
+  cout << row_num << "deleted!" << endl;
+  gamemap.delete_rows(deletable_rows);
+}
+
 void Game::fall()
 {
   inputs[GLFW_KEY_S]          = 0;
@@ -80,6 +90,7 @@ void Game::fall()
   if (is_collistion_blocks(indexes, 0, 1)) {
     fix_blocks(indexes);
     next_blocks_to_now_blocks();
+    delete_block_lines();
   } else {
     now_blocks.fall();
   }
@@ -129,7 +140,7 @@ Blocks Game::random_blocks(int x, int y)
   return Blocks(x, y, rnd() % 5);
 }
 
-void Game::update_vertexes_and_colors()
+map<string, vector<GLfloat>> Game::update_vertexes_and_colors()
 {
   vector<GLfloat> _vertexes;
   vector<GLfloat> _colors;
@@ -156,6 +167,20 @@ void Game::update_vertexes_and_colors()
       gamemap.insert_vertexes_and_colors(x_idx, y_idx, c, _vertexes, _colors);
     }
   }
-  vertexes = _vertexes;
-  colors   = _colors;
+  return map<string, vector<GLfloat>> {
+    {"vertexes", _vertexes},
+    {  "colors",   _colors},
+  };
+}
+
+void Game::display_map_in_terminal()
+{
+  system("clear");
+  for (int i = 0; i < gamemap.game_map.size(); i++) {
+    for (int j = 0; j < gamemap.game_map[0].size(); j++) {
+      cout << gamemap.game_map[i][j] << " ";
+    }
+    cout << endl;
+  }
+  cout << endl;
 }

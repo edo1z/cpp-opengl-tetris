@@ -4,7 +4,7 @@
       "adapter": "CodeLLDB",
       "variables": {
         "BUILDME": {
-          "shell": "clang++ -o ${workspaceRoot}/bin/debug -g -lglfw -framework Cocoa -framework OpenGL -framework IOKit -framework CoreVideo ${workspaceRoot}/src/main.cpp"
+          "shell": "cd ${workspaceRoot} && make bin/debug"
         }
       },
       "configuration": {

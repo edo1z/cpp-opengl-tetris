@@ -56,6 +56,20 @@ void Game::update()
     }
   } else {
     fall();
+    return;
+  }
+
+  if (inputs[GLFW_KEY_Q] > 0 && inputs[GLFW_KEY_E] > 0) {
+    inputs[GLFW_KEY_Q] = 0;
+    inputs[GLFW_KEY_E] = 0;
+  } else if (inputs[GLFW_KEY_Q] > 0 || inputs[GLFW_KEY_E] > 0) {
+    inputs[GLFW_KEY_Q]               = 0;
+    inputs[GLFW_KEY_E]               = 0;
+    int                  vec         = inputs[GLFW_KEY_Q] > 0 ? -1 : 1;
+    vector<vector<char>> rotated_map = now_blocks.rotated_map(vec);
+    if (! is_collistion_rotated_blocks(rotated_map)) {
+      now_blocks.rotate(rotated_map);
+    }
   }
 }
 
@@ -70,6 +84,18 @@ void Game::fall()
     now_blocks.fall();
   }
   falling_time = system_clock::now();
+}
+
+bool Game::is_collistion_rotated_blocks(vector<vector<char>> rotated_map)
+{
+  for (int y_idx = 0; y_idx < rotated_map.size(); y_idx++) {
+    for (int x_idx = 0; x_idx < rotated_map[0].size(); x_idx++) {
+      if (rotated_map[y_idx][x_idx] != '.') {
+        if (gamemap.is_collision(x_idx + now_blocks.x, y_idx + now_blocks.y, 0, 0)) return true;
+      }
+    }
+  }
+  return false;
 }
 
 bool Game::is_collistion_blocks(vector<vector<int>> indexes, int x_vec, int y_vec)
@@ -110,19 +136,20 @@ void Game::update_vertexes_and_colors()
   gamemap.update_vertexes_and_colors();
   _vertexes = gamemap.vertexes;
   _colors   = gamemap.colors;
-
-  int                   y_idx, x_idx, w, h, _x_idx, _y_idx;
+  int                   y_idx, x_idx, _x_idx, _y_idx;
   char                  c;
   vector<vector<char>>& now_map  = now_blocks.blocks_type.blocks_map;
   vector<vector<char>>& next_map = next_blocks.blocks_type.blocks_map;
-  w = h = now_map.size();
-  for (_y_idx = 0; _y_idx < h; _y_idx++) {
-    for (_x_idx = 0; _x_idx < w; _x_idx++) {
+  for (_y_idx = 0; _y_idx < now_map.size(); _y_idx++) {
+    for (_x_idx = 0; _x_idx < now_map[0].size(); _x_idx++) {
       c     = now_map[_y_idx][_x_idx];
       x_idx = _x_idx + now_blocks.x;
       y_idx = _y_idx + now_blocks.y;
       gamemap.insert_vertexes_and_colors(x_idx, y_idx, c, _vertexes, _colors);
-
+    }
+  }
+  for (_y_idx = 0; _y_idx < next_map.size(); _y_idx++) {
+    for (_x_idx = 0; _x_idx < next_map[0].size(); _x_idx++) {
       c     = next_map[_y_idx][_x_idx];
       x_idx = _x_idx + next_blocks.x;
       y_idx = _y_idx + next_blocks.y;

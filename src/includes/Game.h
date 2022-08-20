@@ -32,6 +32,7 @@ class Game
   void  update();
   void  fall();  // ブロックを下落させる
   bool  is_collistion_blocks(vector<vector<int>> indexes, int x_vec, int y_vec);
+  bool  is_collistion_rotated_blocks(vector<vector<char>> rotated_map);
   void  fix_blocks(vector<vector<int>> indexes);
   void  next_blocks_to_now_blocks();
 

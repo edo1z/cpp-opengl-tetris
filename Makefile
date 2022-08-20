@@ -9,6 +9,8 @@ OBJS := $(addprefix $(BUILD_DIR)/, $(subst .cpp,.o, $(notdir $(SRCS))))
 
 $(BUILD_DIR)/main: $(OBJS)
 	clang++ -o $@ $(LIBS) $(FRAMEWORKS) $^ 
+$(BUILD_DIR)/debug: $(OBJS)
+	clang++ -o $@ $(LIBS) $(FRAMEWORKS) $^ 
 $(BUILD_DIR)/%.o: src/%.cpp
 	clang++ -c -o $@ $(CPPFLAGS) $<
 

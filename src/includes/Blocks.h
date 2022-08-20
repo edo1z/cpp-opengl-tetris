@@ -12,6 +12,7 @@ enum class BlocksID { I, L, T, Z, O };
 
 struct BlocksType {
   BlocksID             id;
+  vector<int>          center;
   vector<vector<char>> blocks_map;
 };
 
@@ -22,8 +23,10 @@ class Blocks
   int        y;  // GameMap上のYのindex
   BlocksType blocks_type;
   Blocks(int _x, int _y, int blocks_types_idx);
-  void                fall();
-  void                go_right();
-  void                go_left();
-  vector<vector<int>> block_indexes();
+  void                 fall();
+  void                 go_right();
+  void                 go_left();
+  void                 rotate(vector<vector<char>> rotated_map);
+  vector<vector<char>> rotated_map(int vec);
+  vector<vector<int>>  block_indexes();
 };

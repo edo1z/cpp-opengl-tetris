@@ -2,6 +2,8 @@
 
 m1 macの、c++とOpenGLで簡易的なテトリスを作りました。
 
+https://user-images.githubusercontent.com/89882017/185777309-9afa6109-ba77-42e9-bd1e-2e37c981b26a.mp4
+
 ### 動作環境
 - m1 mac
 

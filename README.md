@@ -1,8 +1,8 @@
-## cpp-opengl-tetris
+# cpp-opengl-tetris
 
 m1 macの、c++とOpenGLで簡易的なテトリスを作りました。
 
-### 動作環境
+## 動作環境
 - m1 mac
 
 ```
@@ -20,9 +20,9 @@ Xcode: 13.4.1
 Rosetta 2: false
 ```
 
-### Install〜実行
+## Install〜実行
 
-- GLFWをインストール
+### GLFWをインストール
 
 ```
 brwe install glfw
@@ -32,13 +32,13 @@ export CPATH=/opt/homebrew/include
 export LIBRARY_PATH=/opt/homebrew/lib
 ```
 
-- リポジトリをclone
+### リポジトリをclone
 
 ```
 git clone https://github.com/web3ten0/cpp-opengl-tetris.git
 ```
 
-- binディレクトリ作成、make、実行
+### binディレクトリ作成、make、実行
 
 ```
 cd cpp-opengl-tetris
